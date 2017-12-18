@@ -17,11 +17,17 @@ def pair_off(filelist):
             sys.stderr.write(k)
         else:
             if v[0].lang == 'ja':
+                print(v[0].orig, v[0].fullpath)
                 align = run_aligner(k, v[0], v[1])
             else:
                 align = run_aligner(k, v[1], v[0])
 
-            print(align)
+            if align == b'':
+                sys.stderr.write(k + '\n')
+            else:
+                # todo: logging
+                continue
+
 
 def run_aligner(header, jafile, enfile):
     align_output = subprocess.check_output([
@@ -30,7 +36,8 @@ def run_aligner(header, jafile, enfile):
         'ja-en',
         jafile.fullpath,
         enfile.fullpath,
-        '/home/aiden/Documents/toyota/ttdc/alignout/' + header + '.align.out'
+        '/home/aiden/Documents/toyota/ttdc/alignout/' + header + '.align.out',
+        '--db'
     ])
 
     return align_output
@@ -42,8 +49,8 @@ def prepare_dir(filedir):
     pairlist = []
     unklist = []
     for f in filelist:
-        if f.startswith('w') or f.startswith('e'):
-            pairlist.append(FileProp(f))
+        if f.endswith('.txt') and (f.startswith('w') or f.startswith('e')):
+            pairlist.append(FileProp(filedir + f))
         else:
             unklist.append(f)
 
