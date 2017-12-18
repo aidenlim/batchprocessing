@@ -1,0 +1,12 @@
+Require:
+libreoffice
+java
+
+1) Batch convert to *x format
+    libreoffice --headless --convert-to {format}x *.{format}
+
+2) move converted to own directory
+
+3) run office_extract/content_convert.py
+    python3 content_convert.py {formatx_directory}
+    a. Convert csv to txt with csvtotxt.py
