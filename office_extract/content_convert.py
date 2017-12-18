@@ -4,8 +4,9 @@
 import subprocess
 import sys
 import os
+import logging
 # from ttdc.config import top_dir
-
+logging.basicConfig(filename='extracter.log', level=logging.DEBUG, format='%(asctime)s\t%(levelname)s\t%(message)s')
 convert_dir = '/home/aiden/Documents/toyota/ttdc' + '/converted'
 
 if not os.path.isdir(convert_dir):
@@ -63,4 +64,4 @@ if __name__ == "__main__":
             if convert == b'':
                 sys.stdout.write(file + '\n')
             else:
-                sys.stderr.write(convert + '\n')
+                logging.warning('Failed converting {0}'.format(file))

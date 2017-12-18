@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 import re
 import csv
+import logging
+
+logging.basicConfig(filename='extracter.log', level=logging.DEBUG, format='%(asctime)s\t%(levelname)s\t%(message)s')
 
 
 def output_break(line):
@@ -42,10 +46,12 @@ def corpus_write(parallels, outputfile):
         parallelwriter = csv.writer(outfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_ALL)
         for parallel in parallels:
             parallelwriter.writerow([parallel[0], parallel[1]])
+    logging.info('Parsed and Wrote {0}'.format(outputfile))
 
 
 if __name__ == "__main__":
-    alignmentfile = sys.argv[1]
-    prefix = alignmentfile.split('.')[0]
-    data = file_process(alignmentfile)
-    corpus_write(data, prefix + '.align.csv')
+    alignfilelist = [f for f in os.listdir(sys.argv[1]) if os.path.isfile(os.path.join(sys.argv[1], f))]
+    for alignmentfile in alignfilelist:
+        prefix = alignmentfile.split('.')[0]
+        data = file_process(alignmentfile)
+        corpus_write(data, prefix + '.align.csv')

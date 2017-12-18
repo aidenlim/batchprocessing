@@ -26,6 +26,7 @@ def write_csv_data(data, filedest):
         for d in data:
             outfile.write(d + '\n')
 
+
 if __name__ == "__main__":
     filelist = [f for f in os.listdir(sys.argv[1]) if os.path.isfile(os.path.join(sys.argv[1], f))]
     for file in filelist:

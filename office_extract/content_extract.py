@@ -4,7 +4,14 @@
 import subprocess
 import os
 import sys
+import logging
 from collections import defaultdict as dd
+
+logging.basicConfig(filename='extracter.log', level=logging.DEBUG, format='%(asctime)s\t%(levelname)s\t%(message)s')
+
+# todo: set aligner path and outputdir
+aligner_tool = '/home/aiden/Downloads/align-all-170804E/align.sh'
+align_out_dir = '/home/aiden/Documents/toyota/ttdc/alignout/'
 
 
 def pair_off(filelist):
@@ -25,18 +32,17 @@ def pair_off(filelist):
             if align == b'':
                 sys.stderr.write(k + '\n')
             else:
-                # todo: logging
+                logging.warning('Align failed with files header {0}'.format(k))
                 continue
 
 
 def run_aligner(header, jafile, enfile):
     align_output = subprocess.check_output([
-        # todo: set aligner path and outputdir
-        '/home/aiden/Downloads/align-all-170804E/align.sh',
+        aligner_tool,
         'ja-en',
         jafile.fullpath,
         enfile.fullpath,
-        '/home/aiden/Documents/toyota/ttdc/alignout/' + header + '.align.out',
+        align_out_dir + header + '.align.out',
         '--db'
     ])
 
@@ -49,14 +55,16 @@ def prepare_dir(filedir):
     pairlist = []
     unklist = []
     for f in filelist:
-        if f.endswith('.txt') and (f.startswith('w') or f.startswith('e')):
-            pairlist.append(FileProp(filedir + f))
-        else:
-            unklist.append(f)
+        if f.endswith('.txt'):
+            if (f.startswith('w') or f.startswith('e')):
+                pairlist.append(FileProp(filedir + f))
+            else:
+                unklist.append(f)
 
     if len(unklist) != 0:
         sys.stderr.write('Logging files with Unknown Headers')
-        # todo: add logging here
+        for unk in unklist:
+            logging.debug('Unknown format file: {0}', unk)
     return pairlist
 
 
